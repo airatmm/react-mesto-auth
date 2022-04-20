@@ -1,0 +1,25 @@
+.popup__fieldset {
+    width: calc(100% - 2 * 36px);
+    margin: 26px auto 14px;
+    padding: 0;
+    border: none;
+    text-align: center;
+    display: grid;
+    justify-items: center;
+    row-gap: 32px;
+}
+
+/*@media screen and (max-width: 510px) {*/
+/*    .popup__fieldset {*/
+/*        width: calc(100% - 2 * 28px);*/
+/*        margin-top: 43px;*/
+/*        margin-bottom: 30px;*/
+/*    }*/
+/*}*/
+
+/*@media screen and (max-width: 320px) {*/
+/*    .popup__fieldset {*/
+/*        width: calc(100% - 2 * 20px);*/
+/*        margin-top: 36px;*/
+/*    }*/
+/*}*/

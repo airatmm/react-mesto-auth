@@ -5,8 +5,11 @@
     margin: 0 auto;
     text-rendering: optimizeLegibility;
     min-width: 320px;
-    /*max-width: 1280px;*/
+    min-height: 100vh;
+    width: 100%;
     display: flex;
     align-items: center;
     flex-flow: column wrap;
+    flex-direction: column;
+    position: relative;
 }
