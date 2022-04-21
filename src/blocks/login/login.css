@@ -5,5 +5,17 @@
     justify-content: center;
     max-width: 358px;
     width: 100%;
-    margin-bottom: 67px;
+    margin: 0 0 48px;
+}
+
+@media screen and (max-width:420px) {
+    .login {
+        max-width: calc(100% - 2 * 30px);
+    }
+}
+
+@media screen and (max-width:320px) {
+    .login {
+        max-width: calc(100% - 2 * 30px);
+    }
 }

@@ -60,8 +60,6 @@ const Login = ({onLogin, isLoading}) => {
                     className="login__button">
                     {isLoading ? 'Вход...' : 'Войти'}
                 </button>
-
-
             </form>
         </div>
     )

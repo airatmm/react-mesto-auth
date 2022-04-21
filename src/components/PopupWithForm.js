@@ -21,7 +21,6 @@ function PopupWithForm({name, title, children, buttonText, isOpen, onClose, onSu
         }
     }, [handleEscClose, isOpen]);
 
-
     return (
         <div onClick={handleCloseByClick} className={`popup popup_type_${name} ${isOpen && 'popup_opened'}`}>
             <div className="popup__content">

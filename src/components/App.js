@@ -16,6 +16,7 @@ import ConfirmDeletePopup from "./ConfirmDeletePopup";
 import ProtectedRoute from './ProtectedRoute';
 import * as auth from '../utils/auth';
 import {getToken, removeToken, setToken} from "../utils/token.js";
+import HeaderInfoMobile from "./HeaderInfoMobile";
 
 
 function App() {
@@ -27,20 +28,16 @@ function App() {
     const [currentUser, setCurrentUser] = useState({});
     const [cards, setCards] = useState([]);
     const [cardDelete, setCardDelete] = useState({});
-    const [isLoading, setLoading] = useState(false);
-
+    const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState({
         email: ""
     });
     const [loggedIn, setLoggedIn] = useState(false);
     const [isRegisterSuccess, setIsRegisterSuccess] = useState(false);
-
-
+    const [isHeaderInfoOpened, setIsHeaderInfoOpened] = useState(false);
     const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false);
     // попап результата регистрации
-
     const history = useHistory();
-
     //const location = useLocation();
 
 
@@ -98,41 +95,40 @@ function App() {
     }
 
     function handleUpdateUser(info) {
-        setLoading(true);
+        setIsLoading(true);
         api.editProfile(info)
             .then((res) => {
                 setCurrentUser(res);
                 closeAllPopups();
             })
             .catch((err) => console.log(`Ошибка обновления профиля ${err}`))
-            .finally(() => setLoading(false));
+            .finally(() => setIsLoading(false));
     }
 
     function handleUpdateAvatar(avatar) {
-        setLoading(true);
+        setIsLoading(true);
         api.changeUserAvatar(avatar)
             .then((res) => {
                 setCurrentUser(res);
                 closeAllPopups();
             })
             .catch((err) => console.log(`Ошибка обновления аватара ${err}`))
-            .finally(() => setLoading(false));
+            .finally(() => setIsLoading(false));
     }
 
     function handleAddPlaceSubmit(newCard) {
-        setLoading(true);
+        setIsLoading(true);
         api.addNewCard(newCard)
             .then((newCard) => {
                 setCards([newCard, ...cards]);
                 closeAllPopups();
             })
             .catch((err) => console.log(`Ошибка добавления новой карточки ${err}`))
-            .finally(() => setLoading(false));
+            .finally(() => setIsLoading(false));
     }
 
-
     useEffect(() => {
-        if (loggedIn) {
+        if (loggedIn) { // нужна ли проверка, нужно же загрузить один раз при рендере
             Promise.all([
                 api.getCards(),
                 api.getUserInfo()
@@ -141,7 +137,7 @@ function App() {
                     setCards(cards);
                     setCurrentUser(info);
                 })
-                .catch((err) => console.log(`Ошибка загрузки данных с сервера (cards or userInfo) ${err}`));
+                .catch((err) => console.log(`Ошибка загрузки данных с сервера (cards или userInfo) ${err}`));
         }
     }, [loggedIn]);
 
@@ -151,7 +147,6 @@ function App() {
         if (jwt) {
             auth.getContent(jwt)
                 .then((res) => {
-                    console.log(res)
                     if (res && res.data.email) {
                         // console.log(res)
                         setLoggedIn(true);
@@ -195,7 +190,7 @@ function App() {
     }
 
     const handleLogin = (email, password) => {
-        setLoading(true);
+        setIsLoading(true);
         auth.authorize(email, password)
             .then((res) => {
                 checkRes(res)
@@ -203,11 +198,11 @@ function App() {
                 history.push('/');
             })
             .catch((err) => console.error(err))
-            .finally(() => setLoading(false));
+            .finally(() => setIsLoading(false));
     };
 
     const handleRegister = (email, password) => {
-        setLoading(true);
+        setIsLoading(true);
         auth.register(email, password)
             .then((res) => {
                 checkRes(res)
@@ -222,17 +217,31 @@ function App() {
             })
             .finally(() => {
                 setIsInfoTooltipPopupOpen(true);
-                setLoading(false);
+                setIsLoading(false);
             });
     };
+
+    // Открытие/закрытие инфо пользователя в мобильной версии
+    const openHeaderInfo = () => {
+        setIsHeaderInfoOpened(!isHeaderInfoOpened);
+    }
 
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <>
+                {(loggedIn && isHeaderInfoOpened)
+                    && (<HeaderInfoMobile
+                        email={data.email}
+                        onSignOut={handleSignOut}
+                        isHeaderInfoOpened={isHeaderInfoOpened}
+                    />)}
+
                 <Header
                     loggedIn={loggedIn}
                     onSignOut={handleSignOut}
                     email={data.email}
+                    isHeaderInfoOpened={isHeaderInfoOpened}
+                    onHamburgerClick={openHeaderInfo}
                     // locaction={location}
                 />
                 <Switch>
@@ -271,7 +280,7 @@ function App() {
                     isRegisterSuccess={isRegisterSuccess}
                     isOpen={isInfoTooltipPopupOpen}
                     onClose={closeAllPopups}
-                    loggedIn={loggedIn}
+                    //loggedIn={loggedIn}
                 />
 
                 <EditProfilePopup
