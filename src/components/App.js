@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Redirect, Route, Switch, useHistory} from 'react-router-dom';
+import {Redirect, Route, Switch, useHistory, useLocation} from 'react-router-dom';
 import Header from './Header';
 import Main from './Main'
 import Footer from './Footer'
@@ -17,8 +17,11 @@ import ProtectedRoute from './ProtectedRoute';
 import * as auth from '../utils/auth';
 import {getToken, removeToken, setToken} from "../utils/token.js";
 import HeaderInfoMobile from "./HeaderInfoMobile";
+import loader from '../images/loader.svg';
+import successAuth from '../images/success.svg';
+import failAuth from '../images/fail.svg';
 
-const  App = () => {
+const App = () => {
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -27,21 +30,27 @@ const  App = () => {
     const [currentUser, setCurrentUser] = useState({});
     const [cards, setCards] = useState([]);
     const [cardDelete, setCardDelete] = useState({});
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false); // процесс загрузки, сохранения и тд (Сохранение...)
     const [data, setData] = useState({
         email: ""
     });
+    //хуки вместо классов
+    //useState - предоставляет функциональным компонентам доступ к состоянию React
+    //объявляем переменную состояния []
     const [infoToolTip, setInfoToolTip] = useState({
         open: false,
         status: false
     });
+    const [message, setMessage] = useState({
+        pathIcon: loader,
+        text: ''
+    });
     const [loggedIn, setLoggedIn] = useState(false);
     const [isHeaderInfoOpened, setIsHeaderInfoOpened] = useState(false);
-    const history = useHistory();
+    const history = useHistory(); // предоставляет доступ к history, используем для навигации (React Router)
+    const location = useLocation();
 
-    //const location = useLocation();
-
-
+// открытие попапов кликом
     const handleEditProfileClick = () => {
         setIsEditProfilePopupOpen(true);
     }
@@ -57,12 +66,12 @@ const  App = () => {
     const handleCardClick = (card) => {
         setSelectedCard(card);
     }
-
+// попап подтверждения удаления
     const handleConfirmDeleteCard = (card) => {
         setIsConfirmDeletePopupOpen(true);
         setCardDelete(card);
     }
-
+// закрыть все попапы
     const closeAllPopups = () => {
         setIsEditProfilePopupOpen(false);
         setIsAddPlacePopupOpen(false);
@@ -73,8 +82,12 @@ const  App = () => {
             open: false,
             status: false
         });
+        setMessage({
+            pathIcon: loader,
+            text: ''
+        });
     }
-
+// лайк карточки
     const handleCardLike = (card) => {
         // Снова проверяем, есть ли уже лайк на этой карточке
         const isLiked = card.likes.some(i => i._id === currentUser._id);
@@ -82,14 +95,17 @@ const  App = () => {
         // Отправляем запрос в API и получаем обновлённые данные карточки
         api.changeLikeCardStatus(card._id, !isLiked)
             .then((newCard) => {
+                // map() создаёт новый массив с результатом вызова указанной функции для каждого элемента массива.
                 setCards((state) => state.map((c) => c._id === card._id ? newCard : c))
             })
             .catch((err) => console.log(`Ошибка ${err}`));
     }
-
+// удаление карточки
     const handleCardDelete = () => {
         api.deleteCard(cardDelete._id)
             .then(() => {
+                //filter() создаёт новый массив со всеми элементами, прошедшими проверку, задаваемую в передаваемой функции
+                // результатом всегда будет массив, true - записываем в результат, false - игнорируется
                 const newCards = cards.filter((c) => c._id !== cardDelete._id);
                 setCards(newCards);
             })
@@ -97,7 +113,7 @@ const  App = () => {
                 console.log(`Ошибка при удалении карточки: ${err} `)
             })
     }
-
+// обновление юзер инфо, редактирование профиля
     const handleUpdateUser = (info) => {
         setIsLoading(true);
         api.editProfile(info)
@@ -108,7 +124,7 @@ const  App = () => {
             .catch((err) => console.log(`Ошибка обновления профиля ${err}`))
             .finally(() => setIsLoading(false));
     }
-
+// редактирование аватара
     const handleUpdateAvatar = (avatar) => {
         setIsLoading(true);
         api.changeUserAvatar(avatar)
@@ -119,7 +135,7 @@ const  App = () => {
             .catch((err) => console.log(`Ошибка обновления аватара ${err}`))
             .finally(() => setIsLoading(false));
     }
-
+// добавить новую карточку
     const handleAddPlaceSubmit = (newCard) => {
         setIsLoading(true);
         api.addNewCard(newCard)
@@ -130,7 +146,8 @@ const  App = () => {
             .catch((err) => console.log(`Ошибка добавления новой карточки ${err}`))
             .finally(() => setIsLoading(false));
     }
-
+// запусается после разметки и отрисовки
+// и перерендерится при логине (зависимость)
     useEffect(() => {
         if (loggedIn) { // нужна ли проверка, нужно же загрузить один раз при рендере
             Promise.all([
@@ -147,12 +164,14 @@ const  App = () => {
 
 
     useEffect(() => {
+        // получаем токен
+        // если токен хранящийся в localstorage соответствует токену пользователя логинимся сразу и пушим в "/"
+        // иначе на страницу логина + очищаем инпут эмайла
         const jwt = getToken();
         if (jwt) {
             auth.getContent(jwt)
                 .then((res) => {
                     if (res && res.data.email) {
-                        // console.log(res)
                         setLoggedIn(true);
                         setData({
                             email: res.data.email
@@ -170,8 +189,10 @@ const  App = () => {
                     });
                 });
         }
-    }, [loggedIn, history]);
+    }, [loggedIn, history]); // зависмость от хистори и от залогинен ли пользователь
 
+
+    // сохранение токена в localstorage
     const checkRes = (res) => {
         if (res.jwt) {
             setToken(res.jwt);
@@ -182,7 +203,7 @@ const  App = () => {
             // history.replace({pathname: "/"});
         }
     };
-
+// выход
     const handleSignOut = () => {
         setLoggedIn(false);
         setData({
@@ -192,7 +213,7 @@ const  App = () => {
         history.push('/sign-in');
 
     }
-
+// логин
     const handleLogin = (email, password) => {
         setIsLoading(true);
         auth.authorize(email, password)
@@ -207,17 +228,20 @@ const  App = () => {
                     open: true,
                     status: false
                 });
+                setMessage({pathIcon: failAuth, text: 'Что-то пошло не так! Попробуйте ещё раз.'});
+
             })
             .finally(() => {
                 setIsLoading(false);
             });
     };
-
+// регистрация
     const handleRegister = (email, password) => {
         setIsLoading(true);
         auth.register(email, password)
             .then((res) => {
                 checkRes(res)
+                setMessage({pathIcon: successAuth, text: 'Вы успешно зарегистрировались!'});
                 history.replace({pathname: '/sign-in'})
                 setInfoToolTip({
                     open: true,
@@ -230,6 +254,7 @@ const  App = () => {
                     open: true,
                     status: false
                 });
+                setMessage({pathIcon: failAuth, text: 'Что-то пошло не так! Попробуйте ещё раз.'});
             })
             .finally(() => {
                 setIsLoading(false);
@@ -257,7 +282,7 @@ const  App = () => {
                     email={data.email}
                     isHeaderInfoOpened={isHeaderInfoOpened}
                     onHamburgerClick={openHeaderInfo}
-                    // locaction={location}
+                    locaction={location}
                 />
                 <Switch>
                     <ProtectedRoute
@@ -294,6 +319,7 @@ const  App = () => {
                 <InfoTooltip
                     infoToolTip={infoToolTip}
                     onClose={closeAllPopups}
+                    message={message}
                 />
 
                 <EditProfilePopup

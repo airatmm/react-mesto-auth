@@ -48,3 +48,5 @@ export const getContent = (token) => {
     })
         .then(checkResponse);
 };
+
+//Bearer - предоставить доступ носителю этого токена
