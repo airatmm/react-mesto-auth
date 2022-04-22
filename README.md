@@ -36,9 +36,9 @@ ___
    npm run start
 ```
 
-for future:
-- рефакторинг когда в однотипный формат (function => const)
-- добавить комментарии!
-- loader для infoTooltip
-- привести в порядок index.css
-- использовать useLocation() для login/registration
+for future(develop):
+- рефакторинг когда в однотипный формат (function => const) ✅
+- добавить комментарии! +/- ✅
+- loader для infoTooltip +++/- ✅
+- привести в порядок index.css ✅
+- использовать useLocation() для login/registration ✅
