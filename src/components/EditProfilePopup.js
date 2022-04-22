@@ -1,26 +1,33 @@
 import PopupWithForm from "./PopupWithForm";
-import React, {useContext, useState, useEffect} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {CurrentUserContext} from '../contexts/CurrentUserContext';
 
-function EditProfilePopup({isOpen, onClose, onUpdateUser, isLoading}) {
+const EditProfilePopup = (
+    {
+        isOpen,
+        onClose,
+        onUpdateUser,
+        isLoading
+    }
+) => {
     const currentUser = useContext(CurrentUserContext);
-    const [name , setName] = useState('');
-    const [description , setDescription] = useState('');
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
 
     useEffect(() => {
         setName(currentUser.name);
         setDescription(currentUser.about);
     }, [isOpen, currentUser]);
 
-    function handleNameChange(evt) {
+    const handleNameChange = (evt) => {
         setName(evt.target.value);
     }
 
-    function handleDescriptionChange(evt) {
+    const handleDescriptionChange = (evt) => {
         setDescription(evt.target.value);
     }
 
-    function handleSubmit(evt) {
+    const handleSubmit = (evt) => {
         // Запрещаем браузеру переходить по адресу формы
         evt.preventDefault();
 

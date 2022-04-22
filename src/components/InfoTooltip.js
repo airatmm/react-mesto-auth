@@ -2,8 +2,8 @@ import React from "react";
 import successAuth from '../images/success.svg';
 import failAuth from '../images/fail.svg';
 
-function InfoTooltip({onClose, infoToolTip}) {
-    function handleCloseByClick(evt) {
+const InfoTooltip = ({onClose, infoToolTip}) => {
+    const handleCloseByClick = (evt) => {
         if (evt.currentTarget === evt.target) {
             onClose();
         }

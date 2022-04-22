@@ -1,8 +1,8 @@
 import React from "react";
 
-function ImagePopup({card, onClose}) {
+const ImagePopup = ({card, onClose}) => {
 
-    function handleCloseByClick(evt) {
+    const handleCloseByClick = (evt) => {
         if (evt.currentTarget === evt.target) {
             onClose();
         }

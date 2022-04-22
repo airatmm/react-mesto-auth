@@ -18,7 +18,7 @@ import * as auth from '../utils/auth';
 import {getToken, removeToken, setToken} from "../utils/token.js";
 import HeaderInfoMobile from "./HeaderInfoMobile";
 
-function App() {
+const  App = () => {
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -42,28 +42,28 @@ function App() {
     //const location = useLocation();
 
 
-    function handleEditProfileClick() {
+    const handleEditProfileClick = () => {
         setIsEditProfilePopupOpen(true);
     }
 
-    function handleAddPlaceClick() {
+    const handleAddPlaceClick = () => {
         setIsAddPlacePopupOpen(true);
     }
 
-    function handleEditAvatarClick() {
+    const handleEditAvatarClick = () => {
         setIsEditAvatarPopupOpen(true);
     }
 
-    function handleCardClick(card) {
+    const handleCardClick = (card) => {
         setSelectedCard(card);
     }
 
-    function handleConfirmDeleteCard(card) {
+    const handleConfirmDeleteCard = (card) => {
         setIsConfirmDeletePopupOpen(true);
         setCardDelete(card);
     }
 
-    function closeAllPopups() {
+    const closeAllPopups = () => {
         setIsEditProfilePopupOpen(false);
         setIsAddPlacePopupOpen(false);
         setIsEditAvatarPopupOpen(false);
@@ -75,7 +75,7 @@ function App() {
         });
     }
 
-    function handleCardLike(card) {
+    const handleCardLike = (card) => {
         // Снова проверяем, есть ли уже лайк на этой карточке
         const isLiked = card.likes.some(i => i._id === currentUser._id);
 
@@ -87,7 +87,7 @@ function App() {
             .catch((err) => console.log(`Ошибка ${err}`));
     }
 
-    function handleCardDelete() {
+    const handleCardDelete = () => {
         api.deleteCard(cardDelete._id)
             .then(() => {
                 const newCards = cards.filter((c) => c._id !== cardDelete._id);
@@ -98,7 +98,7 @@ function App() {
             })
     }
 
-    function handleUpdateUser(info) {
+    const handleUpdateUser = (info) => {
         setIsLoading(true);
         api.editProfile(info)
             .then((res) => {
@@ -109,7 +109,7 @@ function App() {
             .finally(() => setIsLoading(false));
     }
 
-    function handleUpdateAvatar(avatar) {
+    const handleUpdateAvatar = (avatar) => {
         setIsLoading(true);
         api.changeUserAvatar(avatar)
             .then((res) => {
@@ -120,7 +120,7 @@ function App() {
             .finally(() => setIsLoading(false));
     }
 
-    function handleAddPlaceSubmit(newCard) {
+    const handleAddPlaceSubmit = (newCard) => {
         setIsLoading(true);
         api.addNewCard(newCard)
             .then((newCard) => {

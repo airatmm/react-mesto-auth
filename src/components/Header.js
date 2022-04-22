@@ -4,7 +4,7 @@ import logo from '../images/logo.svg';
 import HeaderInfo from "./HeaderInfo";
 import Hamburger from "./Hamburger";
 
-function Header({ email, onSignOut, isHeaderInfoOpened, onHamburgerClick}) {
+const Header = ({ email, onSignOut, isHeaderInfoOpened, onHamburgerClick}) => {
     // const {path} = useLocation();
     // const linkText = `${path === '/sign-in' ? 'Регистрация' : 'Войти'}`;
     // const linkPath = `${path === '/sign-in' ? 'sign-up' : 'sign-in'}`;

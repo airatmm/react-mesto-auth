@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Hamburger({ isHeaderInfoOpened, onHamburgerClick }) {
+const Hamburger = ({ isHeaderInfoOpened, onHamburgerClick }) => {
     const hamburgerClassName =
         `hamburger
     ${isHeaderInfoOpened

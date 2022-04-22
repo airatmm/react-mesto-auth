@@ -1,8 +1,19 @@
 import {useCallback, useEffect} from "react";
 
-function PopupWithForm({name, title, children, buttonText, isOpen, onClose, onSubmit, isLoading}) {
+const PopupWithForm = (
+    {
+        name,
+        title,
+        children,
+        buttonText,
+        isOpen,
+        onClose,
+        onSubmit,
+        isLoading
+    }
+) => {
 
-    function handleCloseByClick(evt) {
+    const handleCloseByClick = (evt) => {
         if (evt.currentTarget === evt.target) {
             onClose();
         }
