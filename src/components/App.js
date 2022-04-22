@@ -211,7 +211,7 @@ const App = () => {
         });
         removeToken();
         history.push('/sign-in');
-
+        setIsHeaderInfoOpened(false)
     }
 // логин
     const handleLogin = (email, password) => {
