@@ -18,7 +18,6 @@ import * as auth from '../utils/auth';
 import {getToken, removeToken, setToken} from "../utils/token.js";
 import HeaderInfoMobile from "./HeaderInfoMobile";
 
-
 function App() {
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
@@ -32,12 +31,14 @@ function App() {
     const [data, setData] = useState({
         email: ""
     });
+    const [infoToolTip, setInfoToolTip] = useState({
+        open: false,
+        status: false
+    });
     const [loggedIn, setLoggedIn] = useState(false);
-    const [isRegisterSuccess, setIsRegisterSuccess] = useState(false);
     const [isHeaderInfoOpened, setIsHeaderInfoOpened] = useState(false);
-    const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false);
-    // попап результата регистрации
     const history = useHistory();
+
     //const location = useLocation();
 
 
@@ -68,7 +69,10 @@ function App() {
         setIsEditAvatarPopupOpen(false);
         setIsConfirmDeletePopupOpen(false);
         setSelectedCard(null);
-        setIsInfoTooltipPopupOpen(false);
+        setInfoToolTip({
+            open: false,
+            status: false
+        });
     }
 
     function handleCardLike(card) {
@@ -197,8 +201,16 @@ function App() {
                 setLoggedIn(true);
                 history.push('/');
             })
-            .catch((err) => console.error(err))
-            .finally(() => setIsLoading(false));
+            .catch((err) => {
+                console.error(err)
+                setInfoToolTip({
+                    open: true,
+                    status: false
+                });
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     };
 
     const handleRegister = (email, password) => {
@@ -206,17 +218,20 @@ function App() {
         auth.register(email, password)
             .then((res) => {
                 checkRes(res)
-                history.replace({pathname: '/sign-in'});
-            })
-            .then(() => {
-                setIsRegisterSuccess(true);
+                history.replace({pathname: '/sign-in'})
+                setInfoToolTip({
+                    open: true,
+                    status: true
+                });
             })
             .catch((err) => {
                 console.error(err)
-                setIsRegisterSuccess(false);
+                setInfoToolTip({
+                    open: true,
+                    status: false
+                });
             })
             .finally(() => {
-                setIsInfoTooltipPopupOpen(true);
                 setIsLoading(false);
             });
     };
@@ -277,10 +292,8 @@ function App() {
                 <Footer/>
 
                 <InfoTooltip
-                    isRegisterSuccess={isRegisterSuccess}
-                    isOpen={isInfoTooltipPopupOpen}
+                    infoToolTip={infoToolTip}
                     onClose={closeAllPopups}
-                    //loggedIn={loggedIn}
                 />
 
                 <EditProfilePopup
