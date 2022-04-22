@@ -42,3 +42,4 @@ for future(develop):
 - loader для infoTooltip +++/- ✅
 - привести в порядок index.css ✅
 - использовать useLocation() для login/registration ✅
+- исправить signOut мобильной версии, при повторном логине HeaderInfoMobile находится в состоянии opened ✅ 
