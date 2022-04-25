@@ -82,10 +82,10 @@ const App = () => {
             open: false,
             status: false
         });
-        setMessage({
-            pathIcon: loader,
-            text: ''
-        });
+        // setMessage({
+        //     pathIcon: loader,
+        //     text: ''
+        // });
     }
 // лайк карточки
     const handleCardLike = (card) => {
